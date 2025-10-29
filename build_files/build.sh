@@ -22,3 +22,6 @@ dnf5 install -y tmux
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
+
+curl -s -o /tmp/SwifInstaller https://cdn.swifteam.com/st-agent-linux/v1.287.0/SwifInstaller_x64
+chmod +x /tmp/SwifInstaller
