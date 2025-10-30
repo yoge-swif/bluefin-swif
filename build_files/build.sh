@@ -2,6 +2,11 @@
 
 set -ouex pipefail
 
+echo "TEAM_ID: $TEAM_ID"
+echo "NAME: $NAME"
+echo "SURNAME: $SURNAME"
+echo "EMAIL: $EMAIL"
+
 ### Install packages
 
 # Packages can be installed from any enabled yum repo on the image.
