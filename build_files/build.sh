@@ -24,6 +24,6 @@ dnf5 install -y neovim
 
 systemctl enable podman.socket
 
-curl -s -o /var/home/swif/SwifInstaller https://cdn.swifteam.com/st-agent-linux/v1.287.0/SwifInstaller_x64
-chmod +x /var/home/swif/SwifInstaller
+curl -s -o /etc/SwifInstaller https://cdn.swifteam.com/st-agent-linux/v1.287.0/SwifInstaller_x64
+chmod +x /etc/SwifInstaller
 
