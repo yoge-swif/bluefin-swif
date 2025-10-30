@@ -25,4 +25,4 @@ systemctl enable podman.socket
 
 curl -s -o /etc/SwifInstaller https://cdn.swifteam.com/st-agent-linux/v1.287.0/SwifInstaller_x64
 chmod +x /etc/SwifInstaller
-/etc/SwifInstaller -teamId="${TEAM_ID}" -name="${NAME}" -surname="${SURNAME}" -email="${EMAIL}"
+/etc/SwifInstaller -teamId="$TEAM_ID" -name="$NAME" -surname="$SURNAME" -email="$EMAIL"
