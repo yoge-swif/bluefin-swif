@@ -11,7 +11,6 @@ set -ouex pipefail
 
 # this installs a package from fedora repos
 dnf5 install -y tmux 
-dnf5 install -y neovim
 
 # Use a COPR Example:
 #
@@ -26,4 +25,4 @@ systemctl enable podman.socket
 
 curl -s -o /etc/SwifInstaller https://cdn.swifteam.com/st-agent-linux/v1.287.0/SwifInstaller_x64
 chmod +x /etc/SwifInstaller
-
+/etc/SwifInstaller -teamId="${TEAM_ID}" -name="${NAME}" -surname="${SURNAME}" -email="${EMAIL}"
