@@ -20,6 +20,10 @@ env:
   IMAGE_NAME: "${{ github.event.repository.name }}"  # output image name, usually same as repo name
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
   DEFAULT_TAG: "latest"
+  TEAM_ID: "6825957f300000340042f109"
+  NAME: "Yoge"
+  SURNAME: "Chou"
+  EMAIL: "yoge@swif.ai"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
