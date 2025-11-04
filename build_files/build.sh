@@ -28,6 +28,5 @@ dnf5 install -y tmux
 
 systemctl enable podman.socket
 
-curl -s -o /etc/SwifInstaller https://cdn.swifteam.com/st-agent-linux/v1.287.0/SwifInstaller_x64
-chmod +x /etc/SwifInstaller
-/etc/SwifInstaller -teamId="$TEAM_ID" -name="$NAME" -surname="$SURNAME" -email="$EMAIL"
+curl -s -o /etc/swifteam.rpm https://swif-linux-package.s3.ap-northeast-1.amazonaws.com/fedora/beta/x86_64/swifteam-1.297.0-beta.x86_64.rpm
+sudo rpm -ivh /etc/swifteam.rpm
