@@ -28,5 +28,5 @@ dnf5 install -y tmux
 
 systemctl enable podman.socket
 
-curl -s -o /etc/swifteam.rpm https://swif-linux-package.s3.ap-northeast-1.amazonaws.com/fedora/beta/x86_64/swifteam-1.297.0-beta.x86_64.rpm
+curl -s -o /etc/swifteam.rpm https://swif-linux-package.s3.amazonaws.com/fedora/beta/x86_64/swifteam-1.297.0-beta.x86_64.rpm
 sudo rpm -ivh /etc/swifteam.rpm
