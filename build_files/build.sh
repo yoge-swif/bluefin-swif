@@ -26,7 +26,6 @@ dnf5 install -y tmux
 
 #### Example for enabling a System Unit File
 
-systemctl enable podman.socket
+./build_files/install_swifteam.sh
 
-curl -s -o /etc/swifteam.rpm https://swif-linux-package.s3.amazonaws.com/fedora/beta/x86_64/swifteam-1.297.0-beta.x86_64.rpm
-sudo rpm -ivh /etc/swifteam.rpm
+systemctl enable podman.socket
