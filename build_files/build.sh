@@ -26,7 +26,4 @@ dnf5 install -y tmux
 
 #### Example for enabling a System Unit File
 
-chmod +x /ctx/install_swifteam.sh
-bash /ctx/install_swifteam.sh
-
 systemctl enable podman.socket
