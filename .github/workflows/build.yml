@@ -21,9 +21,7 @@ env:
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
   DEFAULT_TAG: "latest"
   TEAM_ID: "6825957f300000340042f109"
-  NAME: "Yoge"
-  SURNAME: "Chou"
-  EMAIL: "yoge@swif.ai"
+  GROUP_ID: "69251fd32f00003100085af7"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
@@ -123,9 +121,7 @@ jobs:
           oci: false
           build-args: |
             TEAM_ID=${{ env.TEAM_ID }}
-            NAME=${{ env.NAME }}
-            SURNAME=${{ env.SURNAME }}
-            EMAIL=${{ env.EMAIL }}
+            GROUP_ID=${{ env.GROUP_ID }}
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
