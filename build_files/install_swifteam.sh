@@ -13,4 +13,4 @@ curl -OL https://cdn.swifteam.com/st-agent-linux/v1.300.0/swifteam_x64
 sudo chmod +x swifteam_x64
 sudo mv swifteam_x64 /usr/bin/swifteam
 
-sudo /usr/bin/swifteam -doEnroll -teamId $TEAM_ID 
+sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID

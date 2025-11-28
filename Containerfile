@@ -30,14 +30,10 @@ FROM ghcr.io/ublue-os/bluefin:stable
 ## the following RUN directive does all the things required to run "build.sh" as recommended.
 
 ARG TEAM_ID
-ARG NAME
-ARG SURNAME
-ARG EMAIL
+ARG GROUP_ID
 
 ENV TEAM_ID=${TEAM_ID} \
-    NAME=${NAME} \
-    SURNAME=${SURNAME} \
-    EMAIL=${EMAIL}
+    GROUP_ID=${GROUP_ID}
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
