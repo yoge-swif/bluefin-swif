@@ -6,6 +6,8 @@ enabled=1
 gpgcheck=0
 EOF
 
+sudo dnf install -y rpm-build rpm-sign redhat-rpm-config make gcc glibc-devel
+
 sudo dnf makecache
 sudo dnf install swifteam -y
 sudo dnf upgrade swifteam -y
