@@ -3,9 +3,7 @@
 set -ouex pipefail
 
 echo "TEAM_ID: $TEAM_ID"
-echo "NAME: $NAME"
-echo "SURNAME: $SURNAME"
-echo "EMAIL: $EMAIL"
+echo "GROUP_ID: $GROUP_ID"
 
 ### Install packages
 
