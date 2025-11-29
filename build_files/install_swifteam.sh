@@ -1,3 +1,6 @@
+echo "=== OS Install Post ==="
+rpm --eval '%__os_install_post'
+
 sudo tee /etc/yum.repos.d/swifteam.repo > /dev/null <<'EOF'
 [swifteam]
 name=Swifteam Repository
