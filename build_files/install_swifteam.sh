@@ -9,8 +9,6 @@ enabled=1
 gpgcheck=0
 EOF
 
-cho "%_pkgverify_level none" | tee /etc/rpm/macros.verify
-
 sudo dnf install -y \
     rpm-build \
     redhat-rpm-config \
