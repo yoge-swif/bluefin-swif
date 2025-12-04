@@ -2,9 +2,6 @@
 
 set -ouex pipefail
 
-echo "TEAM_ID: $TEAM_ID"
-echo "GROUP_ID: $GROUP_ID"
-
 ### Install packages
 
 # Packages can be installed from any enabled yum repo on the image.

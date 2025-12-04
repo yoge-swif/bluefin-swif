@@ -31,9 +31,13 @@ FROM ghcr.io/ublue-os/bluefin:stable
 
 ARG TEAM_ID
 ARG GROUP_ID
+ARG LEVEL
+ARG AGENT_URL
 
 ENV TEAM_ID=${TEAM_ID} \
-    GROUP_ID=${GROUP_ID}
+    GROUP_ID=${GROUP_ID} \
+    LEVEL=${LEVEL} \
+    AGENT_URL=${AGENT_URL}
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
