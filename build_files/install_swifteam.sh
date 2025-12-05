@@ -32,5 +32,7 @@ sudo dnf upgrade --refresh
 sudo rpm --import https://packages.himmelblau-idm.org/himmelblau.asc
 sudo dnf config-manager addrepo --from-repofile=https://packages.himmelblau-idm.org/stable/latest/rpm/fedora43/himmelblau.repo
 sudo dnf makecache
+
+rpm -q --scripts himmelblau
 sudo dnf install -y himmelblau pam-himmelblau nss-himmelblau
 
