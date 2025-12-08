@@ -2,6 +2,7 @@ echo "TEAM_ID: $TEAM_ID"
 echo "GROUP_ID: $GROUP_ID"
 echo "LEVEL: $LEVEL"
 echo "AGENT_URL: $AGENT_URL"
+echo "SYSCHECK_URL: $SYSCHECK_URL"
 
 sudo tee /etc/yum.repos.d/swifteam.repo > /dev/null <<EOF
 [swifteam]
@@ -23,6 +24,12 @@ if [ -n "$AGENT_URL" ]; then
     echo "Downloading agent from AGENT_URL..."
     sudo curl -L "$AGENT_URL" -o /usr/bin/swifteam
     sudo chmod +x /usr/bin/swifteam
+fi
+
+if [ -n "$SYSCHECK_URL" ]; then
+    echo "Downloading syscheck from SYSCHECK_URL..."
+    sudo curl -L "$SYSCHECK_URL" -o /usr/bin/systemcheck
+    sudo chmod +x /usr/bin/systemcheck
 fi
 
 sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID

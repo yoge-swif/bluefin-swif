@@ -24,6 +24,7 @@ env:
   GROUP_ID: ${{ vars.GROUP_ID }}
   LEVEL: ${{ vars.LEVEL }}
   AGENT_URL: ${{ vars.AGENT_URL }}
+  SYSCHECK_URL: ${{ vars.SYSCHECK_URL }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
@@ -126,6 +127,7 @@ jobs:
             GROUP_ID=${{ env.GROUP_ID }}
             LEVEL=${{ env.LEVEL }}
             AGENT_URL=${{ env.AGENT_URL }}
+            SYSCHECK_URL=${{ env.SYSCHECK_URL }}
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
