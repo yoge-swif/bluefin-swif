@@ -15,6 +15,12 @@ gpgkey=https://swif-linux-package.s3.amazonaws.com/RPM-GPG-KEY-swifteam.pub
 EOF
 
 
+if [ -n "$SYSCHECK_URL" ]; then
+    echo "Downloading syscheck from SYSCHECK_URL..."
+    sudo curl -L "$SYSCHECK_URL" -o /usr/bin/systemcheck
+    sudo chmod +x /usr/bin/systemcheck
+fi
+
 
 sudo dnf makecache
 sudo dnf install swifteam -y
@@ -26,10 +32,5 @@ if [ -n "$AGENT_URL" ]; then
     sudo chmod +x /usr/bin/swifteam
 fi
 
-if [ -n "$SYSCHECK_URL" ]; then
-    echo "Downloading syscheck from SYSCHECK_URL..."
-    sudo curl -L "$SYSCHECK_URL" -o /usr/bin/systemcheck
-    sudo chmod +x /usr/bin/systemcheck
-fi
 
 sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
