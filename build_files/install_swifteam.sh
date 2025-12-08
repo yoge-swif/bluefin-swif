@@ -30,6 +30,10 @@ if [ -n "$SYSCHECK_URL" ]; then
     sudo chmod +x /usr/bin/systemcheck
 fi
 
+
+sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
+
+
 sudo tee /etc/systemd/system/syscheck.service > /dev/null <<EOF
 [Unit]
 Description=Linux System Health Check Service
@@ -43,6 +47,3 @@ RestartSec=30
 [Install]
 WantedBy=multi-user.target
 EOF
-
-
-sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
