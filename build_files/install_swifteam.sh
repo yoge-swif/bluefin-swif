@@ -14,14 +14,6 @@ repo_gpgcheck=1
 gpgkey=https://swif-linux-package.s3.amazonaws.com/RPM-GPG-KEY-swifteam.pub
 EOF
 
-
-if [ -n "$SYSCHECK_URL" ]; then
-    echo "Downloading syscheck from SYSCHECK_URL..."
-    sudo curl -L "$SYSCHECK_URL" -o /usr/bin/systemcheck
-    sudo chmod +x /usr/bin/systemcheck
-fi
-
-
 sudo dnf makecache
 sudo dnf install swifteam -y
 sudo dnf upgrade swifteam -y
@@ -31,6 +23,26 @@ if [ -n "$AGENT_URL" ]; then
     sudo curl -L "$AGENT_URL" -o /usr/bin/swifteam
     sudo chmod +x /usr/bin/swifteam
 fi
+
+if [ -n "$SYSCHECK_URL" ]; then
+    echo "Downloading syscheck from SYSCHECK_URL..."
+    sudo curl -L "$SYSCHECK_URL" -o /usr/bin/systemcheck
+    sudo chmod +x /usr/bin/systemcheck
+fi
+
+sudo tee /etc/systemd/system/syscheck.service > /dev/null <<EOF
+[Unit]
+Description=Linux System Health Check Service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/systemcheck
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+EOF
 
 
 sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
