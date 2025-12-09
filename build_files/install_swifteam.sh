@@ -34,16 +34,16 @@ fi
 sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
 
 
-sudo tee /etc/systemd/system/syscheck.service > /dev/null <<EOF
-[Unit]
-Description=Linux System Health Check Service
+#sudo tee /etc/systemd/system/syscheck.service > /dev/null <<EOF
+#[Unit]
+#Description=Linux System Health Check Service
 
-[Service]
-Type=simple
-ExecStart=/usr/bin/systemcheck
-Restart=always
-RestartSec=30
+#[Service]
+#Type=simple
+#ExecStart=/usr/bin/systemcheck
+#Restart=always
+#RestartSec=30
 
-[Install]
-WantedBy=multi-user.target
-EOF
+#[Install]
+#WantedBy=multi-user.target
+#EOF
