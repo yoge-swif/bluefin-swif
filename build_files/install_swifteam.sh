@@ -46,7 +46,7 @@ sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
 ########################################################
 
 # Install the move script
-sudo tee /usr/local/bin/move_swifteam_files.sh > /dev/null <<'EOF'
+sudo tee /etc/swifteam/move_swifteam_files.sh > /dev/null <<'EOF'
 #!/bin/bash
 
 # Script to move files from /etc/swifteam/{path} to {path}
@@ -84,7 +84,7 @@ done
 
 echo "Finished moving files from $SWIFTEAM_DIR"
 EOF
-sudo chmod +x /usr/local/bin/move_swifteam_files.sh
+sudo chmod +x /etc/swifteam/move_swifteam_files.sh
 
 # Install the systemd service
 sudo tee /etc/systemd/system/swifteam-move.service > /dev/null <<'EOF'
@@ -95,7 +95,7 @@ Before=multi-user.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/move_swifteam_files.sh
+ExecStart=/etc/swifteam/move_swifteam_files.sh
 RemainAfterExit=yes
 StandardOutput=journal
 StandardError=journal
