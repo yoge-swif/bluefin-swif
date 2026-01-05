@@ -41,6 +41,14 @@ fi
 sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
 
 
+echo "Files in /usr/bin:"
+echo "$(ls /usr/bin)"
+
+
+echo "Files in /usr/local/bin:"
+echo "$(ls /usr/local/bin)"
+
+
 ########################################################
 # Prepare swifteam files
 ########################################################
