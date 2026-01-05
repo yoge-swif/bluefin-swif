@@ -117,6 +117,10 @@ files_to_move=(
 )
 for f in "${files_to_move[@]}"; do
     if [ -d "$f" ]; then
-        mv -f "$f" "/etc/swifteam/$f"
+        echo "Moving $f to /etc/swifteam$f"
+        sudo mkdir -p "/etc/swifteam$f"
+        sudo mv -f "$f" "/etc/swifteam$f"
     fi
 done
+
+echo "Finished moving files"
