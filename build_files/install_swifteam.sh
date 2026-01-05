@@ -116,7 +116,13 @@ fi
 
 # Find all files and directories in /etc/swifteam
 # and move them to their corresponding paths in the root filesystem
+SCRIPT_PATH="$SWIFTEAM_DIR/move_swifteam_files.sh"
 find "$SWIFTEAM_DIR" -mindepth 1 -maxdepth 1 | while read -r item; do
+    # Skip moving the script itself
+    if [ "$item" = "$SCRIPT_PATH" ]; then
+        continue
+    fi
+    
     # Get the relative path (remove /etc/swifteam prefix)
     relative_path="${item#$SWIFTEAM_DIR/}"
     target_path="/$relative_path"
