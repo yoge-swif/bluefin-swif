@@ -45,42 +45,50 @@ sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
 # Prepare swifteam files
 ########################################################
 
-# Function to move files from source directory to target prefix
-# Usage: move_files_to_swifteam <source_dir> <target_prefix>
+# Function to move files from a source path to a target prefix/path
+# - If source is a directory, all files inside are moved, preserving structure
+# - If source is a file, that single file is moved to the target path
+# Usage: move_files_to_swifteam <source_path> <target_prefix_or_path>
 move_files_to_swifteam() {
-    local source_dir="$1"
+    local source_path="$1"
     local target_prefix="$2"
-    
-    if [ ! -d "$source_dir" ]; then
-        echo "Source directory $source_dir does not exist, skipping."
+
+    # If source is a directory, move all contents preserving structure
+    if [ -d "$source_path" ]; then
+        for f in "$source_path"/*; do
+            if [ -e "$f" ]; then
+                # Remove source_path prefix and add target_prefix
+                relative_path="${f#$source_path}"
+                target="${target_prefix}${relative_path}"
+
+                echo "Moving $f to $target"
+                if [ -d "$f" ]; then
+                    sudo mkdir -p "$target"
+                else
+                    sudo mkdir -p "$(dirname "$target")"
+                fi
+                sudo mv -f "$f" "$target"
+            fi
+        done
         return 0
     fi
-    
-    for f in "$source_dir"/*; do
-        if [ -e "$f" ]; then
-            # Remove source_dir prefix and add target_prefix
-            relative_path="${f#$source_dir}"
-            target="${target_prefix}${relative_path}"
-            
-            echo "Moving $f to $target"
-            if [ -d "$f" ]; then
-                sudo mkdir -p "$target"
-            else
-                sudo mkdir -p "$(dirname "$target")"
-            fi
-            sudo mv -f "$f" "$target"
-        fi
-    done
+
+    # If source is a file, move that single file
+    if [ -f "$source_path" ]; then
+        local target="$target_prefix"
+        echo "Moving file $source_path to $target"
+        sudo mkdir -p "$(dirname "$target")"
+        sudo mv -f "$source_path" "$target"
+        return 0
+    fi
+
+    echo "Source $source_path does not exist, skipping."
+    return 0
 }
 
-# Define source directories and their target prefixes
-# Format: "source_dir:target_prefix"
+# Define source paths and their target prefixes/paths
+# Format: "source_path:target_prefix_or_path"
 # Add more paths here as needed
-MOVE_PATHS=(
-    "/var/lib/swifteam:/etc/swifteam/var/lib/swifteam"
-    "/usr/local/bin/systemcheck:/etc/swifteam/usr/local/bin/systemcheck"
-)
-
 # Process all defined paths
 for path_mapping in "${MOVE_PATHS[@]}"; do
     source_dir="${path_mapping%%:*}"
