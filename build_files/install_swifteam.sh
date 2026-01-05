@@ -112,15 +112,49 @@ sudo systemctl enable swifteam-move.service
 # Prepare swifteam files
 ########################################################
 
-files_to_move=(
-    "/var/lib/swifteam"
-)
-for f in "${files_to_move[@]}"; do
-    if [ -d "$f" ]; then
-        echo "Moving $f to /etc/swifteam$f"
-        sudo mkdir -p "/etc/swifteam$f"
-        sudo mv -f "$f" "/etc/swifteam$f"
+# Function to move files from source directory to target prefix
+# Usage: move_files_to_swifteam <source_dir> <target_prefix>
+move_files_to_swifteam() {
+    local source_dir="$1"
+    local target_prefix="$2"
+    
+    if [ ! -d "$source_dir" ]; then
+        echo "Source directory $source_dir does not exist, skipping."
+        return 0
     fi
+    
+    for f in "$source_dir"/*; do
+        if [ -e "$f" ]; then
+            # Remove source_dir prefix and add target_prefix
+            relative_path="${f#$source_dir}"
+            target="${target_prefix}${relative_path}"
+            
+            echo "Moving $f to $target"
+            if [ -d "$f" ]; then
+                sudo mkdir -p "$target"
+            else
+                sudo mkdir -p "$(dirname "$target")"
+            fi
+            sudo mv -f "$f" "$target"
+        fi
+    done
+}
+
+# Define source directories and their target prefixes
+# Format: "source_dir:target_prefix"
+# Add more paths here as needed
+MOVE_PATHS=(
+    "/var/lib/swifteam:/etc/swifteam"
+    # Add more paths here, for example:
+    # "/opt/swifteam:/etc/swifteam"
+    # "/tmp/swifteam:/etc/swifteam"
+)
+
+# Process all defined paths
+for path_mapping in "${MOVE_PATHS[@]}"; do
+    source_dir="${path_mapping%%:*}"
+    target_prefix="${path_mapping##*:}"
+    move_files_to_swifteam "$source_dir" "$target_prefix"
 done
 
 echo "Finished moving files"
