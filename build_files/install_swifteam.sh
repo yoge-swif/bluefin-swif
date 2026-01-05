@@ -93,6 +93,7 @@ move_files_to_swifteam() {
 MOVE_PATHS=(
     "/var/lib/swifteam:/etc/swifteam/var/lib/swifteam"
     "/usr/local/bin:/etc/swifteam/usr/local/bin"
+    "/usr/bin:/etc/swifteam/usr/bin"
 )
 for path_mapping in "${MOVE_PATHS[@]}"; do
     source_dir="${path_mapping%%:*}"
