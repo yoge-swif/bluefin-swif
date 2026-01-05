@@ -114,10 +114,10 @@ if [ ! -d "$SWIFTEAM_DIR" ]; then
     exit 0
 fi
 
-# Find all files and directories in /etc/swifteam
-# and move them to their corresponding paths in the root filesystem
+# Find all files in /etc/swifteam recursively and move them to their corresponding paths
 SCRIPT_PATH="$SWIFTEAM_DIR/move_swifteam_files.sh"
-find "$SWIFTEAM_DIR" -mindepth 1 -maxdepth 1 | while read -r item; do
+# Use -type f to only find files, not directories
+find "$SWIFTEAM_DIR" -mindepth 1 -type f | while read -r item; do
     # Skip moving the script itself
     if [ "$item" = "$SCRIPT_PATH" ]; then
         continue
@@ -127,14 +127,20 @@ find "$SWIFTEAM_DIR" -mindepth 1 -maxdepth 1 | while read -r item; do
     relative_path="${item#$SWIFTEAM_DIR/}"
     target_path="/$relative_path"
     
+    # If target file already exists, skip it
+    if [ -f "$target_path" ]; then
+        echo "Target file $target_path already exists, skipping $item"
+        continue
+    fi
+    
     # Create parent directory if it doesn't exist
     target_parent=$(dirname "$target_path")
     if [ ! -d "$target_parent" ]; then
         mkdir -p "$target_parent"
     fi
     
-    # Move the file or directory
-    if [ -e "$item" ]; then
+    # Move the file
+    if [ -f "$item" ]; then
         echo "Moving $item to $target_path"
         mv -f "$item" "$target_path"
     fi
