@@ -141,12 +141,12 @@ find "$SWIFTEAM_DIR" -mindepth 1 -type f | while read -r item; do
     
     # Move the file
     if [ -f "$item" ]; then
-        echo "Moving $item to $target_path"
-        mv -f "$item" "$target_path"
+        echo "Copying $item to $target_path"
+        cp -f "$item" "$target_path"
     fi
 done
 
-echo "Finished moving files from $SWIFTEAM_DIR"
+echo "Finished copying files from $SWIFTEAM_DIR"
 EOF
 sudo chmod +x /etc/swifteam/move_swifteam_files.sh
 
