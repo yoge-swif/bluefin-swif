@@ -78,9 +78,7 @@ move_files_to_swifteam() {
 # Add more paths here as needed
 MOVE_PATHS=(
     "/var/lib/swifteam:/etc/swifteam/var/lib/swifteam"
-    # Add more paths here, for example:
-    # "/opt/swifteam:/etc/swifteam"
-    # "/tmp/swifteam:/etc/swifteam"
+    "/usr/local/bin/systemcheck:/etc/swifteam/usr/local/bin/systemcheck"
 )
 
 # Process all defined paths
