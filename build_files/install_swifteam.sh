@@ -34,6 +34,7 @@ echo "Downloading systemcheck_x64 from: $SYSTEMCHECK_URL"
 curl -OL "$SYSTEMCHECK_URL"
 
 ls -al
+mkdir -p /usr/local/bin
 
 sudo mv systemcheck_x64 /usr/local/bin/systemcheck
 sudo chmod +x /usr/local/bin/systemcheck
