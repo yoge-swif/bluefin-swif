@@ -33,6 +33,8 @@ SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/sy
 echo "Downloading systemcheck_x64 from: $SYSTEMCHECK_URL"
 curl -OL "$SYSTEMCHECK_URL"
 
+ls -al
+
 sudo mv systemcheck_x64 /usr/local/bin/systemcheck
 sudo chmod +x /usr/local/bin/systemcheck
 
