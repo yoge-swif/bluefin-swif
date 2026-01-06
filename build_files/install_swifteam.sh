@@ -22,32 +22,26 @@ sudo dnf makecache
 sudo dnf install swifteam -y
 sudo dnf upgrade swifteam -y
 
-if [ -n "$AGENT_URL" ]; then
-    echo "Downloading agent from AGENT_URL..."
-    sudo curl -L "$AGENT_URL" -o /usr/bin/swifteam
-    sudo chmod +x /usr/bin/swifteam
-fi
+########################################################
+# Install Systemcheck
+########################################################
 
-if [ -n "$SYSCHECK_URL" ]; then
-    echo "Downloading syscheck from SYSCHECK_URL..."
-    sudo curl -L "$SYSCHECK_URL" -o /usr/bin/systemcheck
-    sudo chmod +x /usr/bin/systemcheck
-fi
+SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
+echo "Detected swifteam version: $SWIFTEAM_VERSION"
+
+SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/${SWIFTEAM_VERSION}/systemcheck_x64"
+echo "Downloading systemcheck_x64 from: $SYSTEMCHECK_URL"
+curl -fsSL "$SYSTEMCHECK_URL" -o systemcheck
+
+sudo mv systemcheck /usr/local/bin/systemcheck
+sudo chmod +x /usr/local/bin/systemcheck
+
 
 ########################################################
 # Run Swifteam
 ########################################################
 
 sudo /usr/bin/swifteam -oneShot -teamId $TEAM_ID -groupIds $GROUP_ID
-
-
-echo "Files in /usr/bin:"
-echo "$(ls /usr/bin)"
-
-
-echo "Files in /usr/local/bin:"
-echo "$(ls /usr/local/bin)"
-
 
 ########################################################
 # Prepare swifteam files
