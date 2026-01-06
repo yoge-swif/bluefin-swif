@@ -29,7 +29,7 @@ sudo dnf upgrade swifteam -y
 SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
 echo "Detected swifteam version: $SWIFTEAM_VERSION"
 
-SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/${SWIFTEAM_VERSION}/systemcheck_x64"
+SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_x64"
 echo "Downloading systemcheck_x64 from: $SYSTEMCHECK_URL"
 curl -fsSL "$SYSTEMCHECK_URL" -o systemcheck
 
