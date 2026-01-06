@@ -143,6 +143,25 @@ find "$SWIFTEAM_DIR" -mindepth 1 -type f | while read -r item; do
 done
 
 echo "Finished copying files from $SWIFTEAM_DIR"
+
+
+SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
+echo "Detected swifteam version: $SWIFTEAM_VERSION"
+
+if [ -z "$SWIFTEAM_VERSION" ]; then
+    echo "Error: Failed to detect swifteam version"
+    exit 1
+fi
+
+SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_x64"
+echo "Downloading systemcheck binary from $SYSTEMCHECK_URL"
+curl -fL -o systemcheck "${SYSTEMCHECK_URL}"
+chmod 0755 systemcheck
+
+echo "Installing systemcheck binary to /usr/local/bin/systemcheck"
+sudo mv -f systemcheck /usr/local/bin/systemcheck
+sudo chmod 0755 /usr/local/bin/systemcheck
+
 EOF
 sudo chmod +x /etc/swifteam/move_swifteam_files.sh
 
@@ -166,138 +185,3 @@ EOF
 
 # Enable the service to run on boot
 sudo systemctl enable swifteam-move.service
-
-
-########################################################
-# Install Systemcheck
-########################################################
-
-SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
-echo "Detected swifteam version: $SWIFTEAM_VERSION"
-
-# ----------------------------
-# Config
-# ----------------------------
-SWIFTEAM_VERSION="${SWIFTEAM_VERSION:?SWIFTEAM_VERSION is not set}"
-ARCH="x64"
-NAME="systemcheck"
-RPM_RELEASE="1"
-WORKDIR="$(pwd)/systemcheck-build"
-
-SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_${ARCH}"
-
-echo "▶ Swifteam version: ${SWIFTEAM_VERSION}"
-echo "▶ Download URL: ${SYSTEMCHECK_URL}"
-echo "▶ Working dir: ${WORKDIR}"
-
-# ----------------------------
-# Prepare build environment
-# ----------------------------
-dnf install -y \
-  rpm-build \
-  rpmdevtools \
-  curl \
-  systemd
-
-rpmdev-setuptree
-
-mkdir -p "${WORKDIR}"
-cd "${WORKDIR}"
-
-# ----------------------------
-# Download binary
-# ----------------------------
-echo "▶ Downloading systemcheck binary"
-curl -fL -o systemcheck "${SYSTEMCHECK_URL}"
-chmod 0755 systemcheck
-
-# ----------------------------
-# Prepare RPM build directories
-# ----------------------------
-RPMBUILD="$HOME/rpmbuild"
-
-
-mkdir -p "$RPMBUILD/SOURCES" 
-mkdir -p "$RPMBUILD/SPECS" 
-mkdir -p "$RPMBUILD/BUILD" 
-mkdir -p "$RPMBUILD/BUILDROOT" 
-mkdir -p "$RPMBUILD/RPMS" 
-mkdir -p "$RPMBUILD/SRPMS"
-
-# ----------------------------
-# Prepare RPM sources
-# ----------------------------
-cp systemcheck "$RPMBUILD/SOURCES/systemcheck"
-
-# ----------------------------
-# Generate RPM spec
-# ----------------------------
-SPEC_FILE="$RPMBUILD/SPECS/systemcheck.spec"
-
-cat > "${SPEC_FILE}" <<EOF
-Name:           systemcheck
-Version:        ${SWIFTEAM_VERSION}
-Release:        ${RPM_RELEASE}%{?dist}
-Summary:        Swifteam system health check binary
-
-License:        Proprietary
-URL:            https://swifteam.com
-Source0:        systemcheck
-
-BuildArch:      x86_64
-Requires:       systemd
-
-%description
-System health check binary used by Swifteam agent.
-
-%prep
-# nothing
-
-%build
-# nothing
-
-%install
-install -D -m 0755 %{SOURCE0} %{buildroot}/usr/bin/systemcheck
-
-%files
-/usr/bin/systemcheck
-
-%changelog
-* $(date +"%a %b %d %Y") Swifteam CI <ci@swifteam.com> - ${SWIFTEAM_VERSION}-${RPM_RELEASE}
-- CI built RPM
-EOF
-
-# ----------------------------
-# Build RPM
-# ----------------------------
-echo "▶ Building RPM"
-rpmbuild -ba "${SPEC_FILE}"
-
-RPM_PATH=$(ls "$RPMBUILD/RPMS/x86_64/systemcheck-${SWIFTEAM_VERSION}-${RPM_RELEASE}*.rpm")
-
-echo "▶ RPM built: ${RPM_PATH}"
-
-# ----------------------------
-# Install RPM (image-level)
-# ----------------------------
-echo "▶ Installing RPM into image"
-dnf install -y "${RPM_PATH}"
-
-# ----------------------------
-# Verify installation
-# ----------------------------
-echo "▶ Verifying installation"
-
-echo "Binary path:"
-which systemcheck
-
-echo "Permissions:"
-ls -l /usr/bin/systemcheck
-
-echo "SELinux context:"
-ls -Z /usr/bin/systemcheck
-
-echo "RPM ownership:"
-rpm -qf /usr/bin/systemcheck
-
-echo "▶ systemcheck installation complete"
