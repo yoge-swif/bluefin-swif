@@ -23,24 +23,6 @@ sudo dnf install swifteam -y
 sudo dnf upgrade swifteam -y
 
 ########################################################
-# Install Systemcheck
-########################################################
-
-SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
-echo "Detected swifteam version: $SWIFTEAM_VERSION"
-
-SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_x64"
-echo "Downloading systemcheck_x64 from: $SYSTEMCHECK_URL"
-curl -OL "$SYSTEMCHECK_URL"
-
-ls -al
-mkdir -p /usr/local/bin
-
-sudo mv systemcheck_x64 /usr/local/bin/systemcheck
-sudo chmod +x /usr/local/bin/systemcheck
-
-
-########################################################
 # Run Swifteam
 ########################################################
 
@@ -97,7 +79,6 @@ move_files_to_swifteam() {
 # Process all defined paths
 MOVE_PATHS=(
     "/var/lib/swifteam:/etc/swifteam/var/lib/swifteam"
-    "/usr/local/bin:/etc/swifteam/usr/local/bin"
 )
 for path_mapping in "${MOVE_PATHS[@]}"; do
     source_dir="${path_mapping%%:*}"
@@ -185,3 +166,125 @@ EOF
 
 # Enable the service to run on boot
 sudo systemctl enable swifteam-move.service
+
+
+########################################################
+# Install Systemcheck
+########################################################
+
+SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
+echo "Detected swifteam version: $SWIFTEAM_VERSION"
+
+# ----------------------------
+# Config
+# ----------------------------
+SWIFTEAM_VERSION="${SWIFTEAM_VERSION:?SWIFTEAM_VERSION is not set}"
+ARCH="x64"
+NAME="systemcheck"
+RPM_RELEASE="1"
+WORKDIR="$(pwd)/systemcheck-build"
+
+SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_${ARCH}"
+
+echo "▶ Swifteam version: ${SWIFTEAM_VERSION}"
+echo "▶ Download URL: ${SYSTEMCHECK_URL}"
+echo "▶ Working dir: ${WORKDIR}"
+
+# ----------------------------
+# Prepare build environment
+# ----------------------------
+dnf install -y \
+  rpm-build \
+  rpmdevtools \
+  curl \
+  systemd
+
+rpmdev-setuptree
+
+mkdir -p "${WORKDIR}"
+cd "${WORKDIR}"
+
+# ----------------------------
+# Download binary
+# ----------------------------
+echo "▶ Downloading systemcheck binary"
+curl -fL -o systemcheck "${SYSTEMCHECK_URL}"
+chmod 0755 systemcheck
+
+# ----------------------------
+# Prepare RPM sources
+# ----------------------------
+cp systemcheck ~/rpmbuild/SOURCES/systemcheck
+
+# ----------------------------
+# Generate RPM spec
+# ----------------------------
+SPEC_FILE=~/rpmbuild/SPECS/systemcheck.spec
+
+cat > "${SPEC_FILE}" <<EOF
+Name:           systemcheck
+Version:        ${SWIFTEAM_VERSION}
+Release:        ${RPM_RELEASE}%{?dist}
+Summary:        Swifteam system health check binary
+
+License:        Proprietary
+URL:            https://swifteam.com
+Source0:        systemcheck
+
+BuildArch:      x86_64
+Requires:       systemd
+
+%description
+System health check binary used by Swifteam agent.
+
+%prep
+# nothing
+
+%build
+# nothing
+
+%install
+install -D -m 0755 %{SOURCE0} %{buildroot}/usr/bin/systemcheck
+
+%files
+/usr/bin/systemcheck
+
+%changelog
+* $(date +"%a %b %d %Y") Swifteam CI <ci@swifteam.com> - ${SWIFTEAM_VERSION}-${RPM_RELEASE}
+- CI built RPM
+EOF
+
+# ----------------------------
+# Build RPM
+# ----------------------------
+echo "▶ Building RPM"
+rpmbuild -ba "${SPEC_FILE}"
+
+RPM_PATH=$(ls ~/rpmbuild/RPMS/x86_64/systemcheck-"${SWIFTEAM_VERSION}"-"${RPM_RELEASE}"*.rpm)
+
+echo "▶ RPM built: ${RPM_PATH}"
+
+# ----------------------------
+# Install RPM (image-level)
+# ----------------------------
+echo "▶ Installing RPM into image"
+dnf install -y "${RPM_PATH}"
+
+# ----------------------------
+# Verify installation
+# ----------------------------
+echo "▶ Verifying installation"
+
+echo "Binary path:"
+which systemcheck
+
+echo "Permissions:"
+ls -l /usr/bin/systemcheck
+
+echo "SELinux context:"
+ls -Z /usr/bin/systemcheck
+
+echo "RPM ownership:"
+rpm -qf /usr/bin/systemcheck
+
+echo "▶ systemcheck installation complete"
