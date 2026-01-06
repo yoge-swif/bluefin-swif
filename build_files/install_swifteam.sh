@@ -216,23 +216,23 @@ chmod 0755 systemcheck
 # ----------------------------
 RPMBUILD="$HOME/rpmbuild"
 
-mkdir -p \
-  "$RPMBUILD/SOURCES" \
-  "$RPMBUILD/SPECS" \
-  "$RPMBUILD/BUILD" \
-  "$RPMBUILD/BUILDROOT" \
-  "$RPMBUILD/RPMS" \
-  "$RPMBUILD/SRPMS"
+
+mkdir -p "$RPMBUILD/SOURCES" 
+mkdir -p "$RPMBUILD/SPECS" 
+mkdir -p "$RPMBUILD/BUILD" 
+mkdir -p "$RPMBUILD/BUILDROOT" 
+mkdir -p "$RPMBUILD/RPMS" 
+mkdir -p "$RPMBUILD/SRPMS"
 
 # ----------------------------
 # Prepare RPM sources
 # ----------------------------
-cp systemcheck ~/rpmbuild/SOURCES/systemcheck
+cp systemcheck "$RPMBUILD/SOURCES/systemcheck"
 
 # ----------------------------
 # Generate RPM spec
 # ----------------------------
-SPEC_FILE=~/rpmbuild/SPECS/systemcheck.spec
+SPEC_FILE="$RPMBUILD/SPECS/systemcheck.spec"
 
 cat > "${SPEC_FILE}" <<EOF
 Name:           systemcheck
@@ -273,7 +273,7 @@ EOF
 echo "▶ Building RPM"
 rpmbuild -ba "${SPEC_FILE}"
 
-RPM_PATH=$(ls ~/rpmbuild/RPMS/x86_64/systemcheck-"${SWIFTEAM_VERSION}"-"${RPM_RELEASE}"*.rpm)
+RPM_PATH=$(ls "$RPMBUILD/RPMS/x86_64/systemcheck-${SWIFTEAM_VERSION}-${RPM_RELEASE}*.rpm")
 
 echo "▶ RPM built: ${RPM_PATH}"
 
