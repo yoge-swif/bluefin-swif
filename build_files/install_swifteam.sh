@@ -23,6 +23,29 @@ sudo dnf install swifteam -y
 sudo dnf upgrade swifteam -y
 
 ########################################################
+# Download and install systemcheck binary
+########################################################
+
+SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
+echo "Detected swifteam version: $SWIFTEAM_VERSION"
+
+if [ -z "$SWIFTEAM_VERSION" ]; then
+    echo "Error: Failed to detect swifteam version"
+    exit 1
+fi
+
+SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_x64"
+echo "Downloading systemcheck binary from $SYSTEMCHECK_URL"
+curl -fL -o systemcheck "${SYSTEMCHECK_URL}"
+chmod 0755 systemcheck
+
+echo "Installing systemcheck binary to /etc/swifteam/usr/local/bin/systemcheck"
+sudo mkdir -p /etc/swifteam/usr/local/bin
+sudo mv -f systemcheck /etc/swifteam/usr/local/bin/systemcheck
+sudo chmod 0755 /etc/swifteam/usr/local/bin/systemcheck
+sudo chown root:root /etc/swifteam/usr/local/bin/systemcheck
+
+########################################################
 # Run Swifteam
 ########################################################
 
@@ -143,25 +166,6 @@ find "$SWIFTEAM_DIR" -mindepth 1 -type f | while read -r item; do
 done
 
 echo "Finished copying files from $SWIFTEAM_DIR"
-
-
-SWIFTEAM_VERSION=$(/usr/bin/swifteam -version 2>&1 | head -n 1 | awk '{print $NF}')
-echo "Detected swifteam version: $SWIFTEAM_VERSION"
-
-if [ -z "$SWIFTEAM_VERSION" ]; then
-    echo "Error: Failed to detect swifteam version"
-    exit 1
-fi
-
-SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_x64"
-echo "Downloading systemcheck binary from $SYSTEMCHECK_URL"
-curl -fL -o systemcheck "${SYSTEMCHECK_URL}"
-chmod 0755 systemcheck
-
-echo "Installing systemcheck binary to /usr/local/bin/systemcheck"
-sudo mv -f systemcheck /usr/local/bin/systemcheck
-sudo chmod 0755 /usr/local/bin/systemcheck
-
 EOF
 sudo chmod +x /etc/swifteam/move_swifteam_files.sh
 
