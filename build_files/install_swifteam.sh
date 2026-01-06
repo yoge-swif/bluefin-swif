@@ -212,6 +212,19 @@ curl -fL -o systemcheck "${SYSTEMCHECK_URL}"
 chmod 0755 systemcheck
 
 # ----------------------------
+# Prepare RPM build directories
+# ----------------------------
+RPMBUILD="$HOME/rpmbuild"
+
+mkdir -p \
+  "$RPMBUILD/SOURCES" \
+  "$RPMBUILD/SPECS" \
+  "$RPMBUILD/BUILD" \
+  "$RPMBUILD/BUILDROOT" \
+  "$RPMBUILD/RPMS" \
+  "$RPMBUILD/SRPMS"
+
+# ----------------------------
 # Prepare RPM sources
 # ----------------------------
 cp systemcheck ~/rpmbuild/SOURCES/systemcheck
