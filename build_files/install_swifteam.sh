@@ -31,9 +31,9 @@ echo "Detected swifteam version: $SWIFTEAM_VERSION"
 
 SYSTEMCHECK_URL="https://cdn.swifteam.com/st-agent-linux/v${SWIFTEAM_VERSION}/systemcheck_x64"
 echo "Downloading systemcheck_x64 from: $SYSTEMCHECK_URL"
-curl -fsSL "$SYSTEMCHECK_URL" -o systemcheck
+curl -OL "$SYSTEMCHECK_URL"
 
-sudo mv systemcheck /usr/local/bin/systemcheck
+sudo mv systemcheck_x64 /usr/local/bin/systemcheck
 sudo chmod +x /usr/local/bin/systemcheck
 
 
